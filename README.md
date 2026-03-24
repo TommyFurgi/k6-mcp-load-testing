@@ -84,6 +84,8 @@ The following strategies are implemented to evaluate system stability and limits
 
 ## 4. Case Study High-Level Architecture
 
+<img width="600" height="900" alt="image" src="https://github.com/user-attachments/assets/effef496-1ad2-4c9a-8dbd-4bbd591095a9" />
+
 ## 5. Case Study Detailed Architecture
 
 ## 6. Environment Configuration Description
