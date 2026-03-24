@@ -84,7 +84,7 @@ The following strategies are implemented to evaluate system stability and limits
 
 ## 4. Case Study High-Level Architecture
 
-<img width="600" height="900" alt="image" src="https://github.com/user-attachments/assets/effef496-1ad2-4c9a-8dbd-4bbd591095a9" />
+<img width="600" height="900" alt="architecture-mcp-k6 drawio (1)" src="https://github.com/user-attachments/assets/a017b6ac-03b6-4c02-881f-7ce7620318d0" />
 
 ## 5. Case Study Detailed Architecture
 
