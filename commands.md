@@ -1,113 +1,46 @@
-## Munikube commands
+# Minikube & K8s Cheat Sheet
 
-### Lifecycle Commands
+Below you will find a quick reference guide with the most necessary commands for debugging, verifying, and managing the infrastructure from the terminal.
 
-| Command | Description |
-| :--- | :--- |
-| `minikube start --driver=docker` | **Start the cluster** using the Docker driver. |
-| `minikube stop` | **Shut down** the cluster (frees up RAM/CPU). |
-| `minikube pause` | Freeze the cluster state without fully stopping. |
-| `minikube unpause` | Resume a paused cluster. |
-| `minikube delete --all --purge` | **Wipe everything** (Deletes all images and data). |
-
-
-### Status & Monitoring
-
-* **Check Cluster Health:**
-    ```powershell
-    minikube status
-    ```
-* **Open Web Dashboard:**
-    ```powershell
-    minikube dashboard
-    ```
-* **List Nodes:**
-    ```powershell
-    kubectl get nodes
-    ```
-* **List All Pods:**
-    ```powershell
-    kubectl get pods
-    ```
-
----
-
-## QuickPizza Management Guide
-
-### Image & Deployment lifecycle
+## ⚙️ Minikube Operational Commands
 
 | Command | Description |
 | :--- | :--- |
-| `docker build -t quickpizza:latest .` | Download the image from Docker Hub to your local Docker. |
-| `minikube image load quickpizza:latest` | Push the image from Windows Docker to Minikube internal storage. |
-| `kubectl apply -f .\k8s\quickpizza.yaml` | Deploy the application (creates Pods and Service). |
-| `minikube service quickpizza` | Open App in browser (creates a network tunnel). |
-| `kubectl delete -f .\k8s\quickpizza.yaml` | Remove App from the cluster but keep Minikube running. |
+| `minikube status` | Returns information about the cluster's health. |
+| `minikube stop` | **Stops the cluster**, freeing up RAM and CPU (without data loss). |
+| `minikube start` | Starts a previously stopped cluster. |
+| `minikube delete --all --purge` | **Full format**. Destroys the cluster and removes all data. |
+| `minikube dashboard` | Opens the official Kubernetes GUI panel in the browser. |
 
-### Lifecycle & Scaling
-
-| Command | Description |
-|--------|------------|
-| `kubectl scale deployment quickpizza --replicas=0` | **Stop (Pause)** – Turns off pods to save RAM, but keeps configuration intact. |
-| `kubectl scale deployment quickpizza --replicas=1` | **Resume (Start)** – Turns pods back on. |
-| `kubectl rollout restart deployment quickpizza` | **Restart** – Forces a fresh start of all application pods. |
-| `kubectl get svc quickpizza` | **Check Ports** – Shows which ports the service is exposed on. |
-| `kubectl get endpoints quickpizza` | **Verify Connection** – Checks whether the service can see active pods. |
-| `kubectl delete deployment quickpizza` | **Delete Deployment** – Removes the deployment and all associated pods. |
-| `kubectl delete service quickpizza` | **Delete Service** – Removes the service exposing the application. |
-
-### Status & Monitoring
-
-* **Check if Pods are Running:**
-    ```powershell
-    kubectl get pods
-    ```
-* **Follow Logs (Debug):**
-    ```powershell
-    kubectl logs -f -l app=quickpizza
-    ```
-* **Check Service Details:**
-    ```powershell
-    kubectl get svc quickpizza
-    ```
-* **Interactive Shell (Go inside container):**
-    ```powershell
-    kubectl exec -it deployment/quickpizza -- sh
-    ```
----
-
-# Prometheus & Grafana Deployment
-
-### Deployment
-| Command | Description |
-|--------|------------|
-| `kubectl apply -f ./k8s/monitoring.yaml` | Deploy monitoring stack (Namespace, RBAC, Prometheus, Grafana) |
-| `kubectl get pods -n monitoring` | To check monitoring podsf for Prometheus & Grafana |
-| `minikube service prometheus -n monitoring` | Open Prometheus UI in browser |
-| `minikube service grafana -n monitoring` | Open Grafana UI in browser |
-| **Grafana Login:** `admin / admin` | Default credentials post-deployment |
-
-### Post-Deployment Setup
-
-Use `minikube service prometheus -n monitoring` and `minikube service grafana -n monitoring` in separate terminals.
-1. **Link Prometheus to Grafana**
-   - Go to **Connections → Data Sources → Add data source**
-   - Select **Prometheus**
-   - Set URL: `http://prometheus.monitoring:9090`
-   - Click **Save & Test**
-
-2. **Verify Data Flow**
-   - Go to **Explore (compass icon)**
-   - Query: `up` → Click **Run Query**
-   - Result: `quickpizza` should show value `1`
-
-### Maintenance & Debug
+## 📦 Application Management (QuickPizza)
 
 | Command | Description |
-|--------|------------|
-| `kubectl scale deployment -n monitoring --all --replicas=0` | Pause monitoring (saves RAM/CPU) |
-| `kubectl rollout restart deployment prometheus -n monitoring` | Restart Prometheus to reload config/RBAC |
-| `kubectl logs -l app=prometheus -n monitoring` | Check logs if targets are missing |
-| `kubectl get targets -n monitoring` | Status check for all monitored pods |
----
+| :--- | :--- |
+| `kubectl scale deployment quickpizza --replicas=0` | **Pause** – Temporarily kills application pods to save resources (configuration is preserved). |
+| `kubectl scale deployment quickpizza --replicas=1` | **Resume** – Turns the application back on. |
+| `kubectl rollout restart deployment quickpizza` | **Restart** – Forces old application containers to terminate and spins up fresh ones. |
+| `kubectl get pods` | Checks the status of Pods (e.g., verifying if STATUS is Running). |
+| `kubectl logs -f -l app=quickpizza` | **Follow Logs** – Starts a live view of errors and logs from the application level. |
+| `kubectl exec -it deployment/quickpizza -- sh` | Opens an interactive console (shell) directly **inside** a running container. |
 
+## 📊 Monitoring Management (Prometheus & Grafana)
+
+By default, all monitoring tools run in the `monitoring` namespace. This requires appending the `-n monitoring` flag to your commands.
+
+| Command | Description |
+| :--- | :--- |
+| `kubectl get pods -n monitoring` | Checks the operational status of Grafana and Prometheus Pods. |
+| `kubectl scale deployment -n monitoring --all --replicas=0` | Stops ALL monitoring pods at once (useful if your computer is running hot). |
+| `kubectl rollout restart deployment prometheus -n monitoring` | Forces Prometheus to fetch its configuration (ConfigMap) anew. |
+| `kubectl logs -l app=prometheus -n monitoring` | Views Prometheus logs and errors. |
+
+### UI Network Tunnels
+
+Commands that you must leave running **in the background** in separate terminal tabs to access the charts via the browser in real time:
+
+```bash
+minikube service prometheus -n monitoring
+minikube service grafana -n monitoring
+```
+
+*Default login credentials for Grafana are `admin` / `admin`.*
