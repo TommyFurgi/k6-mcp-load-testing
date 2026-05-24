@@ -225,7 +225,13 @@ This project demonstrates that **LLM-driven performance testing is practical and
 *Note: Complex multi-step testing workflows still benefit from human oversight, as the LLM primarily relies on k6's textual output rather than real-time visual dashboards.*
 
 ---
-## 11. References
+## 11. Screenshots
+<img width="1920" height="1080" alt="Screenshot_2026-05-24_11-05-21" src="https://github.com/user-attachments/assets/a8992891-0c82-4f72-8df4-eed557092817" />
+<img width="1920" height="1080" alt="Screenshot_2026-05-24_11-05-35" src="https://github.com/user-attachments/assets/79a4887d-8cb8-4156-9f60-1dad8a5cd08c" />
+
+
+---
+## 12. References
 
 - k6 Documentation  
 https://grafana.com/docs/k6/latest/
